@@ -35,3 +35,39 @@ El uso de esta regla Sigma es responsabilidad del usuario y se debe aplicar seg�
 - Información sobre AMSI: https://docs.microsoft.com/en-us/windows/whats-new/whats-new-windows-10-21h1#antimalware-scan-interface-amsi-in-c-and-net
 - Sysmon: https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon
 
+
+## Uso Sospechoso de mshta.exe para Ejecutar Binarios
+
+**Descripción:**
+Esta regla Sigma detecta el uso sospechoso de `mshta.exe` para ejecutar contenido binario. Los atacantes a veces abusan de `mshta.exe`, un proceso legítimo de Microsoft conocido como Aplicación de HTML Host, para evadir mecanismos de seguridad y ejecutar código malicioso en forma de aplicaciones HTML. Mediante la incorporación de un contenido binario dentro de un archivo HTML y utilizando varios objetos ActiveX, intentan ejecutar dicho contenido binario en el sistema de la víctima.
+
+**Autor:** Camilo Burgos
+**Fecha:** 27 de julio de 2023
+
+### Criterios de Detección
+
+- **EventID:** 1
+- **Image:** '*\mshta.exe'
+- **CommandLine:** '*ExpandEnvironmentStrings*data:text/html*script*ActiveXObject*new ActiveXObject*nodeTypedValue*saveToFile*'
+
+### Configuración de Sysmon Recomendada
+
+Para utilizar esta regla Sigma, se recomienda tener Sysmon instalado en los endpoints de Windows y configurado para registrar el Evento ID 1, que registra eventos de creación de procesos.
+
+### Nivel de Confianza
+
+Esta regla tiene un alto nivel de confianza, ya que está específicamente diseñada para identificar el uso sospechoso de `mshta.exe` en la ejecución de contenido binario, un comportamiento común exhibido por ciertos tipos de malware, incluyendo ransomware.
+
+### Falsos Positivos
+
+El uso legítimo de `mshta.exe` para ejecutar aplicaciones HTML puede activar esta regla. Se recomienda correlacionar esta regla con otra información de seguridad para reducir la cantidad de falsos positivos.
+
+### Referencias
+
+- [Microsoft Docs - mshta.exe](https://docs.microsoft.com/es-es/windows-server/administration/windows-commands/mshta)
+- [Trend Micro - Malicious HTML Application File Hides as Fake Document](https://www.trendmicro.com/es_es/research/21/k/malicious-html-application-file-hides-as-fake-document.html)
+
+---
+**Nota:** Esta regla Sigma se proporciona tal como está, sin garantías. Se recomienda a los usuarios probar y validar la regla en su propio entorno antes de implementarla.
+
+
