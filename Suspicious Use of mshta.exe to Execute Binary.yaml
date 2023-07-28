@@ -1,9 +1,9 @@
-title: Suspicious Use of mshta.exe to Execute Binary
+title: Enhanced Detection of Suspicious Use of mshta.exe to Execute Binary
 description: |
-  Detects suspicious use of mshta.exe to execute binary content.
+  Detects suspicious use of mshta.exe to execute binary content with an expanded set of patterns, targeting specific techniques and polyglotism.
 
   Author: Camilo Burgos
-  Date: 2023-07-27
+  Date: 2023-07-28
 
 status: stable
 logsource:
@@ -12,7 +12,27 @@ logsource:
 detection:
   selection:
     EventID: 1
-    Image: '*\mshta.exe'
-    CommandLine: '*ExpandEnvironmentStrings*data:text/html*script*ActiveXObject*new ActiveXObject*nodeTypedValue*saveToFile*'
+    Image: '*\\mshta.exe'   # Escaping backslashes for proper pattern matching
+    CommandLine: 
+      - '*vbscript*'        # Detects presence of VBScript in command line
+      - '*.jpg*'            # Detects suspicious use of image files in the command line
+      - '*.png*'            # Detects suspicious use of image files in the command line
+      - '*.lnk*'            # Detects suspicious use of .lnk (shortcut) files in the command line
+      - '*.xls*'            # Detects suspicious use of Excel files in the command line
+      - '*.doc*'            # Detects suspicious use of Word files in the command line
+      - '*.zip*'            # Detects suspicious use of zip archives in the command line
+      - '*http*'            # Detects command lines involving HTTP (potential network activity)
+      - '*javascript*'      # Detects command lines involving JavaScript
+      - '*script*'          # Detects command lines involving the word "script"
+      - '*data:text/html*script*ActiveXObject*new ActiveXObject*nodeTypedValue*saveToFile*' # Detects specific mshta.exe technique with ActiveXObject
   condition: selection
 level: high
+references:
+  - https://www.microsoft.com/security/blog/2023/07/15/threat-actors-misusing-mshta-exe/
+  - https://attack.mitre.org/techniques/T1140/
+  - https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon
+tags:
+  - attack.defense_evasion
+  - attack.t1140
+falsepositives: 
+  - False positives may occur based on legitimate scripts and administrative tools used in the monitored environment. Regularly review and fine-tune the rule based on your environment's normal behavior.
