@@ -1,0 +1,38 @@
+title: Rundll32.exe Abused for Proxy Execution of Malicious Code
+description: |
+  Detects attempts to abuse rundll32.exe for proxy execution of malicious code, including execution of DLL payloads, Control Panel Item files (.cpl), and scripts like JavaScript. Adversaries may obscure malicious code by appending W and/or A to exported function names or using ordinal numbers for execution. Masquerading techniques (e.g., changing DLL file names, extensions, or function names) may further conceal the payload.
+
+author: Camilo Burgos
+date: 2023-07-28
+
+logsource:
+  product: windows
+  service: sysmon
+
+detection:
+  selection1:
+    Image: '*\\rundll32.exe'  # Escaping backslashes for proper pattern matching
+    Condition: and
+    CommandLine:
+      - '* {*.dll*, * {*.cpl*'  # Detects rundll32.exe execution with DLL or .cpl files
+      - '*Control_RunDLL*'
+      - '*Control_RunDLLAsUser*'
+      - '*javascript*'  # Detects rundll32.exe execution with JavaScript
+
+  selection2:
+    Image: '*\\rundll32.exe'
+    Condition: and
+    CommandLine:
+      - '* W,*'
+      - '* A,*'
+      - '*#, *'  # Detects rundll32.exe execution with function names appended with W, A, or ordinal numbers
+
+condition: selection1 or selection2
+
+level: high
+falsepositives:
+  - Legitimate use of rundll32.exe for system operations and software installations.
+
+references:
+  - [Information about AMSI](https://docs.microsoft.com/en-us/windows/whats-new/whats-new-windows-10-21h1#antimalware-scan-interface-amsi-in-c-and-net)
+  - [Sysmon](https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon)
