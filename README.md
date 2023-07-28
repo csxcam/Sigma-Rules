@@ -65,7 +65,7 @@ El uso legítimo de `mshta.exe` para ejecutar aplicaciones HTML puede activar es
 ### Referencias
 
 - [Microsoft Docs - mshta.exe](https://docs.microsoft.com/es-es/windows-server/administration/windows-commands/mshta)
-- [[Trend Micro - Malicious HTML Application File Hides as Fake Document](https://www.trendmicro.com/es_es/research/21/k/malicious-html-application-file-hides-as-fake-document.html)](https://www.trendmicro.com/en_us/research/18/b/attack-using-windows-installer-msiexec-exe-leads-lokibot.html)
+- https://www.trendmicro.com/en_us/research/18/b/attack-using-windows-installer-msiexec-exe-leads-lokibot.html
 
 ---
 **Nota:** Esta regla Sigma se proporciona tal como está, sin garantías. Se recomienda a los usuarios probar y validar la regla en su propio entorno antes de implementarla.
