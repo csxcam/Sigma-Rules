@@ -1,27 +1,37 @@
-# Sigma-Rules
+# Regla Sigma: Detect AMSI Disabling and Obfuscation via Memory Manipulation
 
-Regla Sigma: Detectar intentos de deshabilitar AMSI mediante manipulación de memoria
+**Descripción:**
+Esta regla Sigma está diseñada para detectar intentos de deshabilitar AMSI (Anti-Malware Scan Interface) mediante la manipulación de la memoria en un proceso y el uso de técnicas de ofuscación en PowerShell. AMSI es una característica de seguridad en Windows que permite a las aplicaciones y herramientas de seguridad escanear y detectar contenido malicioso o sospechoso antes de su ejecución, lo que ayuda a proteger contra amenazas de malware.
 
-Descripción:
-Esta regla Sigma tiene como objetivo detectar intentos de deshabilitar el Módulo de Inspección de Script de Antimalware (AMSI) en sistemas Windows mediante manipulación de memoria en un proceso específico, como powershell.exe.
+**Detalles de la Regla:**
+- La regla se basa en eventos de Sysmon (System Monitor) proporcionados por Windows.
+- Detecta dos escenarios diferentes:
+  1. Intentos de deshabilitar AMSI manipulando la memoria de un proceso, identificando la carga de la librería "amsi.dll" y llamadas a "GetProcAddress" en "powershell.exe".
+  2. Uso de técnicas de ofuscación en PowerShell, detectando el uso de parámetros como "-EncodedCommand" y "-e" en "powershell.exe" que a menudo se emplean para ocultar comandos maliciosos.
 
-Escenario de detección:
-El Módulo de Inspección de Script de Antimalware (AMSI) es una característica de seguridad en Windows que ayuda a proteger las aplicaciones de scripting al permitir que las aplicaciones y servicios soliciten que se escaneen secuencias de comandos antes de su ejecución. Esto ayuda a detectar y bloquear posibles secuencias de comandos maliciosas antes de que puedan ejecutarse.
+**Nivel de Severidad:**
+Alto
 
-Los atacantes pueden intentar deshabilitar AMSI para evitar su detección. Una de las técnicas comunes para deshabilitar AMSI es manipular la memoria de un proceso, como powershell.exe, para evitar que se realicen llamadas a la función AmsiScanBuffer que es utilizada por AMSI para escanear el contenido de scripts.
+**Estado:**
+Experimental
 
-Detalles de la regla:
-La regla Sigma utiliza eventos de Sysmon para detectar dos situaciones específicas:
+**Plataforma:**
+- Windows
+- Sysmon
 
-    Selección 1 (EventID: 1): Detecta si el proceso powershell.exe realiza una llamada a la función GetProcAddress para obtener la dirección de memoria de la función AmsiScanBuffer dentro del archivo de biblioteca amsi.dll. Esta llamada puede ser un indicador de que el proceso está intentando localizar la función AmsiScanBuffer para manipularla.
+**Uso:**
+Esta regla puede implementarse en un entorno de seguridad para la detección temprana de intentos de deshabilitar AMSI y el uso de técnicas de ofuscación en PowerShell. Al detectar estos comportamientos, los administradores de seguridad pueden tomar medidas preventivas para evitar posibles ataques de malware.
 
-    Selección 2 (EventID: 10): Detecta si el proceso powershell.exe intenta acceder al archivo de biblioteca amsi.dll con un permiso de acceso específico (0x40). Esto puede indicar que el proceso está tratando de realizar una modificación en la biblioteca amsi.dll, lo que podría ser un intento de deshabilitar AMSI.
+**Autor:**
+Camilo Burgos
 
-Condición de detección:
-La regla combina las selecciones 1 y 2 utilizando el operador lógico AND (condition: selection1 and selection2). Esto significa que ambas condiciones deben cumplirse para que se active la detección y se considere que ha ocurrido un intento de deshabilitar AMSI mediante manipulación de memoria.
+**Fecha:**
+27 de julio de 2023
 
-Nivel de severidad:
-Se ha asignado un nivel alto de severidad a esta regla debido a la importancia crítica de la característica AMSI en la protección contra scripts maliciosos. Si se detecta un intento de deshabilitar AMSI, puede indicar un intento activo de evadir la detección de amenazas y comprometer el sistema.
+**Aviso Legal:**
+El uso de esta regla Sigma es responsabilidad del usuario y se debe aplicar según las políticas y regulaciones de seguridad establecidas en el entorno específico. Se recomienda probar la regla en un ambiente de pruebas antes de implementarla en producción.
 
-Recomendaciones:
-Si esta regla Sigma se activa, se recomienda realizar una investigación exhaustiva del proceso y del sistema afectado. Se deben tomar medidas inmediatas para mitigar la amenaza y restaurar AMSI a su estado de funcionamiento normal. También es recomendable revisar y mejorar las medidas de seguridad y protección para evitar futuros intentos de deshabilitar AMSI u otras técnicas de evasión.
+**Referencias:**
+- Información sobre AMSI: https://docs.microsoft.com/en-us/windows/whats-new/whats-new-windows-10-21h1#antimalware-scan-interface-amsi-in-c-and-net
+- Sysmon: https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon
+
