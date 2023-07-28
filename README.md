@@ -36,38 +36,42 @@ El uso de esta regla Sigma es responsabilidad del usuario y se debe aplicar seg�
 - Sysmon: https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon
 
 
-## Uso Sospechoso de mshta.exe para Ejecutar Binarios
+## # Enhanced Detection of Suspicious Use of mshta.exe to Execute Binary
 
-**Descripción:**
-Esta regla Sigma detecta el uso sospechoso de `mshta.exe` para ejecutar contenido binario. Los atacantes a veces abusan de `mshta.exe`, un proceso legítimo de Microsoft conocido como Aplicación de HTML Host, para evadir mecanismos de seguridad y ejecutar código malicioso en forma de aplicaciones HTML. Mediante la incorporación de un contenido binario dentro de un archivo HTML y utilizando varios objetos ActiveX, intentan ejecutar dicho contenido binario en el sistema de la víctima.
+This Sigma rule detects suspicious use of mshta.exe to execute binary content with an expanded set of patterns, targeting specific techniques and polyglotism.
 
-**Autor:** Camilo Burgos
-**Fecha:** 27 de julio de 2023
+## Rule Information
 
-### Criterios de Detección
+- **Title**: Enhanced Detection of Suspicious Use of mshta.exe to Execute Binary
+- **Author**: Camilo Burgos
+- **Date**: 2023-07-28
+- **Status**: Stable
+- **Level**: High
+- **Tags**: attack.defense_evasion, attack.t1140
 
-- **EventID:** 1
-- **Image:** '*\mshta.exe'
-- **CommandLine:** '*ExpandEnvironmentStrings*data:text/html*script*ActiveXObject*new ActiveXObject*nodeTypedValue*saveToFile*'
+## Description
 
-### Configuración de Sysmon Recomendada
+The rule leverages Sysmon data and searches for events with `EventID: 1`, which indicates process creations. It targets the execution of `mshta.exe` and checks for specific patterns in the command line that might be indicative of suspicious behavior. The rule looks for the following patterns in the command line:
 
-Para utilizar esta regla Sigma, se recomienda tener Sysmon instalado en los endpoints de Windows y configurado para registrar el Evento ID 1, que registra eventos de creación de procesos.
+- Presence of `vbscript`
+- Suspicious use of image files (e.g., `*.jpg*`, `*.png*`)
+- Execution of .lnk (shortcut) files
+- Execution of Excel and Word files (e.g., `*.xls*`, `*.doc*`)
+- Use of zip archives (e.g., `*.zip*`)
+- Command lines involving HTTP (potential network activity)
+- Command lines involving JavaScript
+- Command lines containing the word "script"
+- Specific mshta.exe technique with `ActiveXObject`, which could indicate malicious activities
 
-### Nivel de Confianza
+The rule is marked with a high severity level, indicating its importance in detecting potentially malicious behavior related to mshta.exe. Please be aware that there might be false positives based on legitimate scripts and administrative tools used in your monitored environment. Regularly review and fine-tune the rule to adapt it to the normal behavior of your environment.
 
-Esta regla tiene un alto nivel de confianza, ya que está específicamente diseñada para identificar el uso sospechoso de `mshta.exe` en la ejecución de contenido binario, un comportamiento común exhibido por ciertos tipos de malware, incluyendo ransomware.
+## References
 
-### Falsos Positivos
+- [Microsoft Security Blog - Threat Actors Misusing mshta.exe](https://www.microsoft.com/security/blog/2023/07/15/threat-actors-misusing-mshta-exe/)
+- [MITRE ATT&CK - T1140: Deobfuscate/Decode Files or Information](https://attack.mitre.org/techniques/T1140/)
+- [Sysinternals Sysmon](https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon)
 
-El uso legítimo de `mshta.exe` para ejecutar aplicaciones HTML puede activar esta regla. Se recomienda correlacionar esta regla con otra información de seguridad para reducir la cantidad de falsos positivos.
+## False Positives
 
-### Referencias
-
-- [Microsoft Docs - mshta.exe](https://docs.microsoft.com/es-es/windows-server/administration/windows-commands/mshta)
-- https://www.trendmicro.com/en_us/research/18/b/attack-using-windows-installer-msiexec-exe-leads-lokibot.html
-
----
-**Nota:** Esta regla Sigma se proporciona tal como está, sin garantías. Se recomienda a los usuarios probar y validar la regla en su propio entorno antes de implementarla.
-
+False positives may occur based on legitimate scripts and administrative tools used in the monitored environment. Regularly review and fine-tune the rule based on your environment's normal behavior.
 
