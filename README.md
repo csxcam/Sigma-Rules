@@ -71,3 +71,34 @@ The rule is marked with a high severity level, indicating its importance in dete
 
 False positives may occur based on legitimate scripts and administrative tools used in the monitored environment. Regularly review and fine-tune the rule based on your environment's normal behavior.
 
+
+# Sigma Rule: Rundll32.exe Abused for Proxy Execution of Malicious Code
+
+## Description
+This Sigma rule detects attempts to abuse rundll32.exe for proxy execution of malicious code, including executing DLL payloads, Control Panel Item files (.cpl), and scripts like JavaScript. Adversaries may utilize rundll32.exe to evade security tools that do not monitor its execution due to allowlists or false positives from normal operations. They may also obscure malicious code by appending W and/or A to exported function names or using ordinal numbers for execution. Additionally, masquerading techniques, such as changing DLL file names, extensions, or function names, can further conceal the payload.
+
+## Detection Details
+The rule leverages Sysmon (System Monitor) events on Windows. It consists of two different detection scenarios:
+1. Detects rundll32.exe execution with DLL or .cpl files and specific undocumented shell32.dll functions.
+2. Detects rundll32.exe execution with function names appended with W, A, or ordinal numbers.
+
+## Severity Level: High
+## Status: Experimental
+## Platform:
+- Windows
+- Sysmon
+
+## False Positives
+Legitimate use of rundll32.exe for system operations and software installations may trigger false positives.
+
+## Author: Camilo Burgos
+## Date: 2023-07-28
+
+## References
+- Information about AMSI: https://docs.microsoft.com/en-us/windows/whats-new/whats-new-windows-10-21h1#antimalware-scan-interface-amsi-in-c-and-net
+- Sysmon: https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon
+
+Disclaimer: The use of this Sigma rule is the responsibility of the user and should be applied according to the security policies and regulations established in the specific environment. It is recommended to test the rule in a test environment before deploying it in production.
+
+
+
