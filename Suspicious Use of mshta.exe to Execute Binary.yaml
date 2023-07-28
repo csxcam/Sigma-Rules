@@ -1,0 +1,18 @@
+title: Suspicious Use of mshta.exe to Execute Binary
+description: |
+  Detects suspicious use of mshta.exe to execute binary content.
+
+  Author: Camilo Burgos
+  Date: 2023-07-27
+
+status: stable
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: 1
+    Image: '*\mshta.exe'
+    CommandLine: '*ExpandEnvironmentStrings*data:text/html*script*ActiveXObject*new ActiveXObject*nodeTypedValue*saveToFile*'
+  condition: selection
+level: high
