@@ -1,8 +1,6 @@
-title: Detect AMSI Disabling via Memory Manipulation
-description: Detects attempts to disable AMSI by manipulating memory in a process.
+title: Detect AMSI Disabling and Obfuscation via Memory Manipulation
+description: Detects attempts to disable AMSI by manipulating memory in a process and use of obfuscation techniques.
 status: experimental
-author: Camilo Burgos
-date: 2023-07-25
 logsource:
   product: windows
   service: sysmon
@@ -15,6 +13,16 @@ detection:
     EventID: 10
     SourceImage: '*\powershell.exe'
     TargetImage: '*\amsi.dll'
-    GrantedAccess: '0x40'
-  condition: selection1 and selection2
+    GrantedAccess: '*0x40*'
+  selection3:
+    EventID: 1
+    Image: '*\powershell.exe'
+    CommandLine: '*-EncodedCommand*'
+  selection4:
+    EventID: 1
+    Image: '*\powershell.exe'
+    CommandLine: '*-e*'
+  condition: (selection1 and selection2) or (selection3 and selection4)
 level: high
+author: Camilo Burgos
+date: 2023-07-27
