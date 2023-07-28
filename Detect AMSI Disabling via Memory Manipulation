@@ -1,0 +1,18 @@
+title: Detect AMSI Disabling via Memory Manipulation
+description: Detects attempts to disable AMSI by manipulating memory in a process.
+status: experimental
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection1:
+    EventID: 1
+    Image: '*\powershell.exe'
+    CommandLine: '*GetProcAddress*amsi.dll*AmsiScanBuffer'
+  selection2:
+    EventID: 10
+    SourceImage: '*\powershell.exe'
+    TargetImage: '*\amsi.dll'
+    GrantedAccess: '*0x40*'
+  condition: selection1 and selection2
+level: high
