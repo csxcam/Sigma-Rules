@@ -32,7 +32,7 @@ Camilo Burgos
 El uso de esta regla Sigma es responsabilidad del usuario y se debe aplicar según las políticas y regulaciones de seguridad establecidas en el entorno específico. Se recomienda probar la regla en un ambiente de pruebas antes de implementarla en producción.
 
 **Referencias:**
-- Información sobre AMSI: https://docs.microsoft.com/en-us/windows/whats-new/whats-new-windows-10-21h1#antimalware-scan-interface-amsi-in-c-and-net
+- Información sobre AMSI: [https://docs.microsoft.com/en-us/windows/whats-new/whats-new-windows-10-21h1#antimalware-scan-interface-amsi-in-c-and-net](https://learn.microsoft.com/en-us/windows/win32/amsi/antimalware-scan-interface-portal)
 - Sysmon: https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon
 
 
