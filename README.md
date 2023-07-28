@@ -1,39 +1,35 @@
-# Regla Sigma: Detect AMSI Disabling and Obfuscation via Memory Manipulation
+# Sigma Rule: Detect AMSI Disabling and Obfuscation via Memory Manipulation
 
-**Descripción:**
-Esta regla Sigma está diseñada para detectar intentos de deshabilitar AMSI (Anti-Malware Scan Interface) mediante la manipulación de la memoria en un proceso y el uso de técnicas de ofuscación en PowerShell. AMSI es una característica de seguridad en Windows que permite a las aplicaciones y herramientas de seguridad escanear y detectar contenido malicioso o sospechoso antes de su ejecución, lo que ayuda a proteger contra amenazas de malware.
+## Description
+This Sigma rule is designed to detect attempts to disable AMSI (Anti-Malware Scan Interface) through memory manipulation in a process and the use of obfuscation techniques in PowerShell. AMSI is a security feature in Windows that allows applications and security tools to scan and detect malicious or suspicious content before execution, helping to protect against malware threats.
 
-**Detalles de la Regla:**
-- La regla se basa en eventos de Sysmon (System Monitor) proporcionados por Windows.
-- Detecta dos escenarios diferentes:
-  1. Intentos de deshabilitar AMSI manipulando la memoria de un proceso, identificando la carga de la librería "amsi.dll" y llamadas a "GetProcAddress" en "powershell.exe".
-  2. Uso de técnicas de ofuscación en PowerShell, detectando el uso de parámetros como "-EncodedCommand" y "-e" en "powershell.exe" que a menudo se emplean para ocultar comandos maliciosos.
+## Rule Details
+The rule is based on Sysmon (System Monitor) events provided by Windows.
+It detects two different scenarios:
+1. Attempts to disable AMSI by manipulating the memory of a process, identifying the loading of the "amsi.dll" library, and calls to "GetProcAddress" in "powershell.exe".
+2. Use of obfuscation techniques in PowerShell, detecting the use of parameters like "-EncodedCommand" and "-e" in "powershell.exe" that are often used to conceal malicious commands.
 
-**Nivel de Severidad:**
-Alto
-
-**Estado:**
-Experimental
-
-**Plataforma:**
+## Severity Level: High
+## Status: Experimental
+## Platform:
 - Windows
 - Sysmon
 
-**Uso:**
-Esta regla puede implementarse en un entorno de seguridad para la detección temprana de intentos de deshabilitar AMSI y el uso de técnicas de ofuscación en PowerShell. Al detectar estos comportamientos, los administradores de seguridad pueden tomar medidas preventivas para evitar posibles ataques de malware.
+## Usage
+This rule can be implemented in a security environment for early detection of attempts to disable AMSI and the use of obfuscation techniques in PowerShell. By detecting these behaviors, security administrators can take preventive measures to avoid potential malware attacks.
 
-**Autor:**
-Camilo Burgos
+## Author: Camilo Burgos
+## Date: July 27, 2023
 
-**Fecha:**
-27 de julio de 2023
+## Disclaimer
+The use of this Sigma rule is the responsibility of the user and should be applied according to the security policies and regulations established in the specific environment. It is recommended to test the rule in a test environment before deploying it in production.
 
-**Aviso Legal:**
-El uso de esta regla Sigma es responsabilidad del usuario y se debe aplicar según las políticas y regulaciones de seguridad establecidas en el entorno específico. Se recomienda probar la regla en un ambiente de pruebas antes de implementarla en producción.
-
-**Referencias:**
-- Información sobre AMSI: [https://docs.microsoft.com/en-us/windows/whats-new/whats-new-windows-10-21h1#antimalware-scan-interface-amsi-in-c-and-net](https://learn.microsoft.com/en-us/windows/win32/amsi/antimalware-scan-interface-portal)
+## References
+- Information about AMSI: https://docs.microsoft.com/en-us/windows/whats-new/whats-new-windows-10-21h1#antimalware-scan-interface-amsi-in-c-and-net
 - Sysmon: https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon
+
+Note: This Sigma rule is provided for GitHub use. If you need further assistance or have more questions, feel free to ask. I'm here to help!
+
 
 
 ## # Enhanced Detection of Suspicious Use of mshta.exe to Execute Binary
